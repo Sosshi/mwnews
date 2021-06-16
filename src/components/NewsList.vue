@@ -1,12 +1,37 @@
 <template>
   <div v-for="article in articles" :key="article.id">
-    <h1>
-      <a :href="article.link">{{ article.heading }}</a>
-    </h1>
-    <img :src="article.image" :alt="getImgAlt(article.heading)" />
-    <p>{{ article.description }}</p>
-    <h2>{{ article.source }}</h2>
-    <h3>{{ article.date }}</h3>
+    <div
+      class="group bg-gray-50 hover:shadow mt-5 md:h-96 flex flex-grow"
+    >
+      <div class="pb-4">
+        <img :src="article.image" alt="" class="h-1/2 w-full object-cover" />
+        <a :href="article.link" class=""
+          ><h1 class="text-2xl group-hover:text-blue-500 text-gray-700 pt-4">
+            {{ article.heading }}
+          </h1></a
+        >
+        <p class="text-gray-500 group-hover:text-gray-700">
+          {{ article.description.slice(0, 110) }}...<a :href="article.link"
+            class="text-blue-500">read more</a
+          >
+        </p>
+        <span class="text-gray-400 px-5">{{
+          convertToDate(article.date)
+        }}</span>
+        <span
+          :class="
+            article.source == 'Zodiak Malawi'
+              ? 'text-yellow-600'
+              : article.source == 'times mw'
+              ? 'text-red-600'
+              : article.source == 'nyasatimes'
+              ? 'text-red-800'
+              : 'text-blue-600'
+          "
+          ><a :href="article.link">{{article.source}}</a></span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -29,11 +54,15 @@ export default defineComponent({
       ImgAlt.value = "image description of " + heading;
     };
 
-    /* 
     const dateNow = ref<Date>();
     const publishedDate = ref<Date>();
 
-    const DAY_IN_MILLISECONDS = ref<number>(86_400_000);
+    const DAY_IN_MINUTES = ref<number>(1440);
+
+    const convertMinutesToHours = (minutes: number) => {
+      let hours = Math.floor(minutes / 60);
+      return { hours };
+    };
     const convertToDate = (date: string | Date) => {
       dateNow.value = new Date();
       publishedDate.value = new Date(date);
@@ -41,30 +70,49 @@ export default defineComponent({
       let DateNowMilliseconds: number = dateNow.value.getTime();
       let publishedDateMilliseconds: number = publishedDate.value.getTime();
 
-      let compareMilliseconds = DateNowMilliseconds - publishedDateMilliseconds;
-      console.log(compareMilliseconds);
+      let compareMinutes =
+        (DateNowMilliseconds - publishedDateMilliseconds) / (1000 * 60);
 
-      if (compareMilliseconds < DAY_IN_MILLISECONDS.value) {
-        let convert =compareMilliseconds/1000
-        return { convert};
-      } else if (
-        compareMilliseconds >= DAY_IN_MILLISECONDS.value &&
-        compareMilliseconds < DAY_IN_MILLISECONDS.value * 2
-      ) {
-        let yesterday = "Yesterday";
-        return { yesterday };
+      if (compareMinutes < 1) {
+        return "Just now";
+      } else if (compareMinutes == 1) {
+        return "A minute ago";
+      } else if (compareMinutes < 60) {
+        return `${Math.floor(compareMinutes)} minutes ago`;
       }
-      let displayDate =
+      else if(compareMinutes < 120){
+        return Object.values(convertMinutesToHours(compareMinutes))[0] + " hour ago"
+      } else if (
+        compareMinutes < DAY_IN_MINUTES.value &&
+        compareMinutes >= 60
+      ) {
+        return (
+          Object.values(convertMinutesToHours(compareMinutes))[0] + " hours ago"
+        );
+      }
+      else if (
+        compareMinutes >= DAY_IN_MINUTES.value &&
+        compareMinutes < DAY_IN_MINUTES.value * 2
+      ) {
+        return "Yesterday";
+      } else if (
+        compareMinutes >= DAY_IN_MINUTES.value * 2 &&
+        compareMinutes < DAY_IN_MINUTES.value * 3
+      ) {
+        return "2 days ago";
+      }
+
+      return (
         String(publishedDate.value.getFullYear()) +
-        ", " +
+        "/" +
         String(publishedDate.value.getMonth() + 1) +
-        ", " +
-        String(publishedDate.value.getDay() + 1);
+        "/" +
+        String(publishedDate.value.getDay() + 1)
+      );
+    };
 
-      return { displayDate };
-    };*/
-
-    return { getImgAlt };
+    return { getImgAlt, convertToDate };
   },
 });
 </script>
+
