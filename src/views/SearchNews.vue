@@ -52,6 +52,7 @@ export default defineComponent({
       fetchNews(route.params.words);
     });
     return { articles, isLoading, isConnected, fetchNews };
+    
   },
 });
 </script>
