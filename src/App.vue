@@ -22,9 +22,15 @@
     </div>
     <div>
       <form class="flex space-x-2">
-        <input placeholder="search" type="text" v-model="search" class="lg:w-96 text-gray-600 rounded-2xl lg:h-8 px-2" v-if="isSearchButtonClicked" />
-        <button @click.prevent="isSearchClicked()" class="hover:text-gray-50"
-          ><svg
+        <input
+          placeholder="search"
+          type="text"
+          v-model="search"
+          class="lg:w-96 text-gray-600 rounded-2xl lg:h-8 px-2"
+          v-if="isSearchButtonClicked"
+        />
+        <button @click.prevent="isSearchClicked()" class="hover:text-gray-50">
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
             fill="none"
@@ -36,50 +42,51 @@
               stroke-linejoin="round"
               stroke-width="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            /></svg
-        ></button>
+            />
+          </svg>
+        </button>
       </form>
     </div>
   </div>
-  <router-view/>
+  <router-view />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import axios from "axios";
-import Article from "./types/Articles";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "App",
-  components: {
-  },
+  components: {},
 
-  setup(){
+  setup() {
     const isSearchButtonClicked = ref<boolean>(false);
-    const search = ref<string>("")
-    const articles = ref<Article>()
+    const search = ref<string>("");
+    const route = useRouter();
 
     const isSearchClicked = () => {
-      if (isSearchButtonClicked.value){
-        isSearchButtonClicked.value = false
-        searchWords(search.value)
-      }else {
-        isSearchButtonClicked.value = true
+      if (isSearchButtonClicked.value) {
+        isSearchButtonClicked.value = false;
+        searchWords(search.value);
+      } else {
+        isSearchButtonClicked.value = true;
       }
-    }
-    const searchWords = (words: string)=> {
+    };
+    const searchWords = (words: string) => {
       if (words) {
-      axios
-        .get("https://mwnews.herokuapp.com/apinews/"+ words)
-        .then((response) => (articles.value = response.data.results))
-        .catch(() => {
-          console.log("Oops seems likes something is not okay"+ ` you tried to search for ${words}`);
-          
-        });}
-        else {alert("please type in something")}
-    }
-    return {isSearchClicked, isSearchButtonClicked, search, searchWords}
-  }
+        route.push("/search/"+ words);
+      } else {
+        alert("please type in something");
+      }
+      isSearchButtonClicked.value = false
+    };
+    return {
+      isSearchClicked,
+      isSearchButtonClicked,
+      search,
+      searchWords,
+    };
+  },
 });
 </script>
 
