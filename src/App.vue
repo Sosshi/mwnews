@@ -15,10 +15,10 @@
     "
   >
     <div class="md:inline text-xl text-gray-800 hidden">
-      <a href="#" class="hover:text-gray-200">Home</a>
+      <router-link to="/">Home</router-link>
     </div>
     <div class="md:inline text-xl text-gray-800 hidden">
-      <a href="#" class="hover:text-gray-200">About</a>
+      <router-link to="/about">About</router-link>
     </div>
     <div>
       <form class="flex space-x-2">
@@ -41,22 +41,23 @@
       </form>
     </div>
   </div>
-  <Home />
+  <router-view/>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import Home from "./views/Home.vue";
+import axios from "axios";
+import Article from "./types/Articles";
 
 export default defineComponent({
   name: "App",
   components: {
-    Home,
   },
 
   setup(){
     const isSearchButtonClicked = ref<boolean>(false);
     const search = ref<string>("")
+    const articles = ref<Article>()
 
     const isSearchClicked = () => {
       if (isSearchButtonClicked.value){
@@ -67,7 +68,15 @@ export default defineComponent({
       }
     }
     const searchWords = (words: string)=> {
-      console.log(words)
+      if (words) {
+      axios
+        .get("https://mwnews.herokuapp.com/apinews/"+ words)
+        .then((response) => (articles.value = response.data.results))
+        .catch(() => {
+          console.log("Oops seems likes something is not okay"+ ` you tried to search for ${words}`);
+          
+        });}
+        else {alert("please type in something")}
     }
     return {isSearchClicked, isSearchButtonClicked, search, searchWords}
   }

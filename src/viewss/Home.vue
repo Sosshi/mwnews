@@ -61,9 +61,9 @@
     </div>
   </div>
 
-  <div v-else-if="isConnected == false" class="">Failed to connect !</div>
+  <div v-else-if="isConnected == false" class="flex min-h-screen w-full justify-center items center">Failed to connect !</div>
 
-  <div v-else class="">connecting...</div>
+  <div v-else class="flex min-h-screen w-full justify-center items center">connecting...</div>
 </template>
 
 <script lang="ts">
@@ -87,52 +87,28 @@ export default defineComponent({
       console.log("Cancelled the order");
     };
 
-    const storeNews = (news: Article[]) => {
-      localStorage.setItem("news", JSON.stringify(news));
-    };
-
-    const getNewsStored = () => {
-      let retrievedData = localStorage.getItem("news");
-      if (retrievedData == null) {
-        return {
-          id: 0,
-          heading: "",
-          description: "",
-          source: "",
-          link: "",
-          image: "",
-          date: "",
-        } as Article;
-      }
-
-      return JSON.parse(String(retrievedData)) as Article;
-    };
-
     const load = () => {
       isLoading.value = false;
     };
 
-    const fetchNews = () => {
+    const fetchNews = (url: string) => {
       axios
-        .get("https://mwnews.herokuapp.com/apinews/")
+        .get(url)
         .then((response) => (articles.value = response.data.results))
         .then(() => {
-          if (articles.value == []) {
-            storeNews(articles.value);
-          }
+          load();
+          isConnected.value = true
         })
         .catch(() => {
           console.log("Oops seems likes something is not okay");
           isConnected.value = false;
-          console.log(getNewsStored());
+          isLoading.value = false
+          
         });
-      load();
-    isConnected.value = true
-      console.log(getNewsStored());
     };
 
     onMounted(() => {
-      fetchNews();
+      fetchNews("https://mwnews.herokuapp.com/apinews/");
     });
 
     return { articles, isConnected, isLoading, isFullpage, onCancel };
