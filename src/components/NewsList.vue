@@ -1,8 +1,6 @@
 <template>
   <div v-for="article in articles" :key="article.id">
-    <div
-      class="group bg-gray-50 hover:shadow mt-5 md:h-96 flex flex-grow"
-    >
+    <div class="group bg-gray-50 hover:shadow mt-5 md:h-96 flex flex-grow">
       <div class="pb-4">
         <img :src="article.image" alt="" class="h-1/2 w-full object-cover" />
         <a :href="article.link" class=""
@@ -11,8 +9,10 @@
           </h1></a
         >
         <p class="text-gray-500 group-hover:text-gray-700">
-          {{ article.description.slice(0, 110) }}...<a :href="article.link"
-            class="text-blue-500">read more</a
+          {{ article.description.slice(0, 110) }}...<a
+            :href="article.link"
+            class="text-blue-500"
+            >read more</a
           >
         </p>
         <span class="text-gray-400 px-5">{{
@@ -28,7 +28,7 @@
               ? 'text-red-800'
               : 'text-blue-600'
           "
-          ><a :href="article.link">{{article.source}}</a></span
+          ><a :href="article.link">{{ article.source }}</a></span
         >
       </div>
     </div>
@@ -79,9 +79,10 @@ export default defineComponent({
         return "A minute ago";
       } else if (compareMinutes < 60) {
         return `${Math.floor(compareMinutes)} minutes ago`;
-      }
-      else if(compareMinutes < 120){
-        return Object.values(convertMinutesToHours(compareMinutes))[0] + " hour ago"
+      } else if (compareMinutes < 120) {
+        return (
+          Object.values(convertMinutesToHours(compareMinutes))[0] + " hour ago"
+        );
       } else if (
         compareMinutes < DAY_IN_MINUTES.value &&
         compareMinutes >= 60
@@ -89,8 +90,7 @@ export default defineComponent({
         return (
           Object.values(convertMinutesToHours(compareMinutes))[0] + " hours ago"
         );
-      }
-      else if (
+      } else if (
         compareMinutes >= DAY_IN_MINUTES.value &&
         compareMinutes < DAY_IN_MINUTES.value * 2
       ) {

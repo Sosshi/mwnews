@@ -74,11 +74,11 @@ export default defineComponent({
     };
     const searchWords = (words: string) => {
       if (words) {
-        route.push("/search/"+ words);
+        route.push("/search/" + words);
       } else {
         alert("please type in something");
       }
-      isSearchButtonClicked.value = false
+      isSearchButtonClicked.value = false;
     };
     return {
       isSearchClicked,

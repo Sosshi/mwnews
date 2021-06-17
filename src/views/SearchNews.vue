@@ -1,5 +1,5 @@
 <template>
-<loading
+  <loading
     v-model:active="isLoading"
     :can-cancel="false"
     :on-cancel="true"
@@ -7,7 +7,7 @@
   />
   <div class="">
     <div v-for="article in articles" :key="article.id">
-      <h1>{{article.heading}}</h1>
+      <h1>{{ article.heading }}</h1>
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "SearchNews",
-  components:{Loading},
+  components: { Loading },
   setup() {
     const articles = ref<Article[]>([]);
     const isLoading = ref<boolean>(true);
@@ -51,8 +51,7 @@ export default defineComponent({
     onMounted(() => {
       fetchNews(route.params.words);
     });
-    return { articles, isLoading, isConnected, fetchNews};
+    return { articles, isLoading, isConnected, fetchNews };
   },
-
 });
 </script>
