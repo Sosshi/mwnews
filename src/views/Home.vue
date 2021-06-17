@@ -73,11 +73,13 @@ import Article from "@/types/Articles";
 import NewsList from "@/components/NewsList.vue";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "Home",
   components: { NewsList, Loading },
   setup() {
+    const store = useStore()
     const articles = ref<Article[]>([]);
     const isConnected = ref<boolean>(true);
     const isLoading = ref<boolean>(true);
@@ -94,21 +96,25 @@ export default defineComponent({
     const fetchNews = (url: string) => {
       axios
         .get(url)
-        .then((response) => (articles.value = response.data.results))
+        .then((response) => (store.state.articles = response.data.results))
         .then(() => {
           load();
-          isConnected.value = true
+          isConnected.value = true;
+          articles.value = store.state.articles
         })
         .catch(() => {
           console.log("Oops seems likes something is not okay");
           isConnected.value = false;
           isLoading.value = false
+          articles.value = store.state.articles
           
         });
     };
 
     onMounted(() => {
       fetchNews("https://mwnews.herokuapp.com/apinews/");
+      console.log()
+
     });
 
     return { articles, isConnected, isLoading, isFullpage, onCancel };
