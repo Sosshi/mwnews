@@ -5,7 +5,7 @@
     :on-cancel="true"
     :is-full-page="true"
   />
-  <div class="">
+  <div class="" v-if="displayResults">
     <div v-for="article in articles" :key="article.id">
       <h1>{{ article.heading }}</h1>
     </div>
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Article from "@/types/Articles";
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
 
@@ -29,6 +29,11 @@ export default defineComponent({
     const isLoading = ref<boolean>(true);
     const isConnected = ref<boolean>(true);
     const route = useRoute();
+
+    const displayResults = computed(()=>{
+      console.log("I am from computed")
+      return fetchNews(route.params.words)
+    })
 
     const load = () => {
       isLoading.value = false;
@@ -47,11 +52,13 @@ export default defineComponent({
           isConnected.value = false;
           isLoading.value = false;
         });
+        return articles.value
     };
     onMounted(() => {
+      console.log("I am from Mount")
       fetchNews(route.params.words);
     });
-    return { articles, isLoading, isConnected, fetchNews };
+    return { articles, isLoading, isConnected, fetchNews, displayResults };
     
   },
 });

@@ -61,9 +61,16 @@
     </div>
   </div>
 
-  <div v-else-if="isConnected == false" class="flex min-h-screen w-full justify-center items center">Failed to connect !</div>
+  <div
+    v-else-if="isConnected == false"
+    class="flex min-h-screen w-full justify-center items center"
+  >
+    Failed to connect !
+  </div>
 
-  <div v-else class="flex min-h-screen w-full justify-center items center">connecting...</div>
+  <div v-else class="flex min-h-screen w-full justify-center items center">
+    connecting...
+  </div>
 </template>
 
 <script lang="ts">
@@ -79,7 +86,7 @@ export default defineComponent({
   name: "Home",
   components: { NewsList, Loading },
   setup() {
-    const store = useStore()
+    const store = useStore();
     const articles = ref<Article[]>([]);
     const isConnected = ref<boolean>(true);
     const isLoading = ref<boolean>(true);
@@ -100,21 +107,19 @@ export default defineComponent({
         .then(() => {
           load();
           isConnected.value = true;
-          articles.value = store.state.articles
+          articles.value = store.state.articles;
         })
         .catch(() => {
           console.log("Oops seems likes something is not okay");
           isConnected.value = false;
-          isLoading.value = false
-          articles.value = store.state.articles
-          
+          isLoading.value = false;
+          articles.value = store.state.articles;
         });
     };
 
     onMounted(() => {
       fetchNews("https://mwnews.herokuapp.com/apinews/");
-      console.log()
-
+      console.log();
     });
 
     return { articles, isConnected, isLoading, isFullpage, onCancel };
