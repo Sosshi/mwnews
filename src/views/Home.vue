@@ -7,7 +7,7 @@
   />
 
   <div v-if="articles.length > 0 && isConnected">
-    <div class="flex flex-col pt-16">
+    <div class="flex flex-col pt-12">
       <!--<div class="h-5/6 bg-gray-100 grid grid-cols-2">
         <img
           src="https://times.mw/wp-content/uploads/2021/06/lafarge-cement-390x220.jpg"

@@ -16,7 +16,7 @@
           >
         </p>
         <span class="text-gray-400 px-5">{{
-          convertToDate(article.date)
+          toDate(article.date)
         }}</span>
         <span
           :class="
@@ -38,6 +38,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
 import Article from "@/types/Articles";
+import convertToDate from "@/methods/dateProcessor"
 
 export default defineComponent({
   name: "NewsList",
@@ -54,64 +55,11 @@ export default defineComponent({
       ImgAlt.value = "image description of " + heading;
     };
 
-    const dateNow = ref<Date>();
-    const publishedDate = ref<Date>();
+    const toDate = (date: string | Date) =>{
+      return convertToDate(date)
+    }
 
-    const DAY_IN_MINUTES = ref<number>(1440);
-
-    const convertMinutesToHours = (minutes: number) => {
-      let hours = Math.floor(minutes / 60);
-      return { hours };
-    };
-    const convertToDate = (date: string | Date) => {
-      dateNow.value = new Date();
-      publishedDate.value = new Date(date);
-
-      let DateNowMilliseconds: number = dateNow.value.getTime();
-      let publishedDateMilliseconds: number = publishedDate.value.getTime();
-
-      let compareMinutes =
-        (DateNowMilliseconds - publishedDateMilliseconds) / (1000 * 60);
-
-      if (compareMinutes < 1) {
-        return "Just now";
-      } else if (compareMinutes == 1) {
-        return "A minute ago";
-      } else if (compareMinutes < 60) {
-        return `${Math.floor(compareMinutes)} minutes ago`;
-      } else if (compareMinutes < 120) {
-        return (
-          Object.values(convertMinutesToHours(compareMinutes))[0] + " hour ago"
-        );
-      } else if (
-        compareMinutes < DAY_IN_MINUTES.value &&
-        compareMinutes >= 60
-      ) {
-        return (
-          Object.values(convertMinutesToHours(compareMinutes))[0] + " hours ago"
-        );
-      } else if (
-        compareMinutes >= DAY_IN_MINUTES.value &&
-        compareMinutes < DAY_IN_MINUTES.value * 2
-      ) {
-        return "Yesterday";
-      } else if (
-        compareMinutes >= DAY_IN_MINUTES.value * 2 &&
-        compareMinutes < DAY_IN_MINUTES.value * 3
-      ) {
-        return "2 days ago";
-      }
-
-      return (
-        String(publishedDate.value.getFullYear()) +
-        "/" +
-        String(publishedDate.value.getMonth() + 1) +
-        "/" +
-        String(publishedDate.value.getDay() + 1)
-      );
-    };
-
-    return { getImgAlt, convertToDate };
+    return { getImgAlt, toDate };
   },
 });
 </script>
