@@ -53,8 +53,9 @@
         </div>
       </div>
     </div>
-    <div class="flex h-full w-full justify-center items-center text-xl text-gray-700">Oops no results found for {{$route.params.words}} </div>
+    
   </div>
+  <div v-else class="flex h-full w-full justify-center items-center text-xl text-gray-700">Oops no results found for {{$route.params.words}} </div>
 </template>
 
 <script lang="ts">
@@ -75,6 +76,10 @@ export default defineComponent({
     const isLoading = ref<boolean>(true);
     const isConnected = ref<boolean>(true);
     const route = useRoute();
+
+    const checkConnection = computed(()=>{
+      return isConnected
+    })
     const toDate = (date: string | Date) => {
       return convertToDate(date);
     };
@@ -114,6 +119,7 @@ export default defineComponent({
       fetchNews,
       displayResults,
       toDate,
+      checkConnection
     };
   },
 });

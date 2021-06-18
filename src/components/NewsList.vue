@@ -15,9 +15,7 @@
             >read more</a
           >
         </p>
-        <span class="text-gray-400 px-5">{{
-          toDate(article.date)
-        }}</span>
+        <span class="text-gray-400 px-5">{{ toDate(article.date) }}</span>
         <span
           :class="
             article.source == 'Zodiak Malawi'
@@ -38,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
 import Article from "@/types/Articles";
-import convertToDate from "@/methods/dateProcessor"
+import convertToDate from "@/methods/dateProcessor";
 
 export default defineComponent({
   name: "NewsList",
@@ -55,9 +53,9 @@ export default defineComponent({
       ImgAlt.value = "image description of " + heading;
     };
 
-    const toDate = (date: string | Date) =>{
-      return convertToDate(date)
-    }
+    const toDate = (date: string | Date) => {
+      return convertToDate(date);
+    };
 
     return { getImgAlt, toDate };
   },

@@ -7,41 +7,13 @@
   />
 
   <div v-if="articles.length > 0 && isConnected">
-    <div class="flex flex-col pt-12">
-      <!--<div class="h-5/6 bg-gray-100 grid grid-cols-2">
-        <img
-          src="https://times.mw/wp-content/uploads/2021/06/lafarge-cement-390x220.jpg"
-          alt=""
-          class="w-full h-full object-cover"
-        />
-        <div class="grid grid-cols-2 w-full">
-          <img
-            src="https://www.nyasatimes.com/wp-content/uploads/21FD7C2F-D239-4A19-9F78-9FE46551B0BC-600x600.jpeg shadow-inner"
-            class="object-cover h-full w-full"
-            alt=""
-          />
-          <img
-            src="https://www.nyasatimes.com/wp-content/uploads/a-Nyasa-Times-pic-7228.jpg shadow-inner shadow"
-            class="object-cover h-full w-full"
-            alt=""
-          />
-          <img
-            src="https://www.zodiakmalawi.com/media/k2/items/cache/1483d5fc21b6efae347a9bf42df7466b_L.jpg"
-            alt=""
-            class="object-cover h-full w-full col-span-2"
-          />
-          <img
-            src="https://www.zodiakmalawi.com/media/k2/items/cache/dd1d8cc2241bc82b0a81e801cebd9ed7_L.jpg"
-            class="object-cover h-full w-full"
-            alt=""
-          />
-          <img
-            src="https://times.mw/wp-content/uploads/2021/06/Covid-vaccine-390x220.jpg"
-            class="object-cover h-full w-full"
-            alt=""
-          />
-        </div>
-      </div>-->
+    <div
+      class="flex pt-20 flex-col"
+      :class="checkedNames.length > 0 ? 'pt-20' : 'pt-10'"
+    >
+      <h1 v-if="checkedNames.length > 0" class="text-center">
+        Showing data for {{ checkedNames }}
+      </h1>
       <div
         class="
           md:grid
@@ -57,6 +29,67 @@
         "
       >
         <NewsList :articles="articles" />
+      </div>
+      <div
+        class="
+          md:flex
+          pt-24
+          lg:w-2/12
+          flex-col
+          items-center
+          hidden
+          fixed
+          pl-4
+          top-0
+          right-0
+        "
+      >
+        <h1 class="text-xl text-blue-500 pr-14 pb-4">
+          Filters{{ filterNews }}
+        </h1>
+        <div id="v-model-multiple-checkboxes">
+          <div class="flex justify-start space-x-4">
+            <input
+              type="checkbox"
+              id="Zodiak"
+              value="Zodiak"
+              v-model="checkedNames"
+              class="block"
+            />
+            <label for="Zodiak">Zodiak</label>
+          </div>
+          <div class="flex justify-start space-x-4">
+            <input
+              type="checkbox"
+              id="nyasatimes"
+              value="nyasatimes"
+              v-model="checkedNames"
+              class="block"
+            />
+            <label for="nyasatimes">nyasatimes</label>
+          </div>
+          <div class="flex justify-start space-x-4">
+            <input
+              type="checkbox"
+              id="times mw"
+              value="times mw"
+              v-model="checkedNames"
+              class="block"
+            />
+            <label for="times mw">times mw</label>
+          </div>
+          <div class="flex justify-start space-x-4">
+            <input
+              type="checkbox"
+              id="Malawi Nation"
+              value="Malawi Nation"
+              v-model="checkedNames"
+              class="block"
+            />
+            <label for="Malawi Nation">Malawi Nation</label>
+          </div>
+          <br />
+        </div>
       </div>
     </div>
   </div>
@@ -91,9 +124,23 @@ export default defineComponent({
     const isConnected = ref<boolean>(true);
     const isLoading = ref<boolean>(true);
     const isFullpage = ref<boolean>(true);
+    const checkedNames = ref<Array<string>>([]);
+
+    const getFilterOptions = (options: any) => {
+      let element;
+      if (options.length == 0) return "cannot parse empty array";
+      for (let i = 0; i < options.length; i++) {
+        if (element) {
+          element = element + ("&source__icontains=" + options[i]);
+        } else {
+          element = "?" + ("source__icontains=" + options[i]);
+        }
+      }
+      return element;
+    };
 
     const onCancel = () => {
-      console.log("Cancelled the order");
+      console.log("Cancelled the loader");
     };
 
     const load = () => {
@@ -101,6 +148,7 @@ export default defineComponent({
     };
 
     const fetchNews = (url: string) => {
+      isLoading.value = true;
       axios
         .get(url)
         .then((response) => (store.state.articles = response.data.results))
@@ -119,12 +167,41 @@ export default defineComponent({
 
     onMounted(() => {
       fetchNews("https://mwnews.herokuapp.com/apinews/");
-      console.log();
     });
 
-    return { articles, isConnected, isLoading, isFullpage, onCancel };
+    return {
+      articles,
+      isConnected,
+      isLoading,
+      isFullpage,
+      onCancel,
+      checkedNames,
+      fetchNews,
+      getFilterOptions,
+    };
+  },
+  computed: {
+    filterNews() {
+      if (this.checkedNames.length > 0) {
+        console.log("I am accessed");
+        let url =
+          "https://mwnews.herokuapp.com/apinews/" +
+          this.getFilterOptions(this.checkedNames);
+        this.fetchNews(url);
+        console.log(url);
+      }
+      return "";
+    },
   },
 });
+
+/*const filterNews = computed(() => {
+      if (getFilterOptions(checkedNames.value)) {
+        
+        );
+      }
+      return "";
+    });*/
 </script>
 
 
