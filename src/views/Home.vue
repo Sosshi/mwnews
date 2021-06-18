@@ -194,14 +194,6 @@ export default defineComponent({
     },
   },
 });
-
-/*const filterNews = computed(() => {
-      if (getFilterOptions(checkedNames.value)) {
-        
-        );
-      }
-      return "";
-    });*/
 </script>
 
 
